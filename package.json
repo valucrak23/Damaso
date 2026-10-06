@@ -2,6 +2,7 @@
   "name": "damaso",
   "private": true,
   "version": "0.0.1",
+  "author": "Valentina Ijelchuk",
   "type": "module",
   "scripts": {
     "dev": "vite",

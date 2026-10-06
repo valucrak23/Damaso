@@ -3,16 +3,6 @@ import type { Tone, VideoSlot } from "../content/types";
 import { LoopingVideo } from "./LoopingVideo";
 import { usePauseWhenHidden } from "./magazine/PageActiveContext";
 
-function ControlsVideo({ src, poster, label }: { src: string; poster?: string; label: string }) {
-  const ref = useRef<HTMLVideoElement>(null);
-  usePauseWhenHidden(ref);
-  return (
-    <video ref={ref} controls preload="metadata" playsInline poster={poster} aria-label={label}>
-      <source src={src} type="video/mp4" />
-    </video>
-  );
-}
-
 type VideoPlaceholderProps = {
   video: VideoSlot;
   stickerTone?: Tone;
@@ -20,11 +10,14 @@ type VideoPlaceholderProps = {
   className?: string;
 };
 
-function embedUrl(video: VideoSlot) {
-  if (!video.src) return undefined;
-  if (video.provider === "youtube") return `https://www.youtube-nocookie.com/embed/${video.src}`;
-  if (video.provider === "vimeo") return `https://player.vimeo.com/video/${video.src}`;
-  return undefined;
+function ControlsVideo({ src, label }: { src: string; label: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  usePauseWhenHidden(ref);
+  return (
+    <video ref={ref} controls preload="metadata" playsInline aria-label={label}>
+      <source src={src} type="video/mp4" />
+    </video>
+  );
 }
 
 export function VideoPlaceholder({
@@ -33,13 +26,13 @@ export function VideoPlaceholder({
   size = "regular",
   className = "",
 }: VideoPlaceholderProps) {
-  const embed = embedUrl(video);
+  const classes = ["video", `video--${size}`, `video--${video.orientation}`, video.objectPosition ? "video--cropped" : "", className]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <figure
-      className={`video video--${size} video--${video.orientation} ${video.objectPosition ? "video--cropped" : ""} ${className}`
-        .replace(/\s+/g, " ")
-        .trim()}
+      className={classes}
       style={
         {
           "--ratio": video.ratio.replace(":", " / "),
@@ -50,18 +43,10 @@ export function VideoPlaceholder({
       title={import.meta.env.DEV ? video.suggestion : undefined}
     >
       <div className="video__window">
-        {video.provider === "mp4" && video.src && video.playback !== "controles" ? (
+        {video.src && video.playback !== "controles" ? (
           <LoopingVideo src={video.src} label={video.caption} boomerang={video.playback === "boomerang"} />
-        ) : video.provider === "mp4" && video.src ? (
-          <ControlsVideo src={video.src} poster={video.poster} label={video.caption} />
-        ) : embed ? (
-          <iframe
-            src={embed}
-            title={video.caption}
-            loading="lazy"
-            allow="encrypted-media; picture-in-picture"
-            allowFullScreen
-          />
+        ) : video.src ? (
+          <ControlsVideo src={video.src} label={video.caption} />
         ) : (
           <div className="video__thumb" role="img" aria-label={`Video pendiente: ${video.caption}`}>
             <span className="video__play" aria-hidden="true">

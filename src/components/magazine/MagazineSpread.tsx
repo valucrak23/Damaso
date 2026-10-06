@@ -11,7 +11,7 @@ type MagazineSpreadProps = {
   children: ReactNode;
 };
 
-const INTERACTIVE = "a, button, video, iframe, input, select, textarea, label, [contenteditable]";
+const INTERACTIVE = "a, button, video";
 
 export function MagazineSpread({
   spread,

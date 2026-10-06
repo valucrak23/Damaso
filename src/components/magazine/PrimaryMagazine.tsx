@@ -112,7 +112,7 @@ export function PrimaryMagazine() {
 
   const onPointerDown = (event: PointerEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
-    if (target.closest("a, button, video, iframe")) return;
+    if (target.closest("a, button, video")) return;
     pointerRef.current = { x: event.clientX, y: event.clientY };
   };
 

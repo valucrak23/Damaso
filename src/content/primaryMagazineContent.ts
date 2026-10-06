@@ -96,7 +96,7 @@ const KINDS: Record<string, MediaKind> = {
 const CARD_LAYOUTS: CardLayout[] = ["feature", "note", "pending", "band"];
 
 /** Archivos de Contenido/Multimedia (Vite los publica tal cual en la raíz del sitio). */
-export function mediaUrl(file?: string) {
+function mediaUrl(file?: string) {
   if (!file) return undefined;
   return `${import.meta.env.BASE_URL}${encodeURIComponent(file)}`;
 }
@@ -145,7 +145,6 @@ const video = (id: string, v: JsonVideo): VideoSlot => ({
   label: v.etiqueta,
   caption: v.descripcion || v.etiqueta,
   suggestion: v.descripcion || v.etiqueta,
-  provider: v.archivo ? "mp4" : undefined,
   src: mediaUrl(v.archivo),
 });
 
@@ -272,5 +271,3 @@ export const primaryMagazineContent = {
     },
   },
 };
-
-export type PrimaryMagazineContent = typeof primaryMagazineContent;

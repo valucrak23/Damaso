@@ -1,6 +1,6 @@
 import type { Tone } from "../content/types";
 
-export type DoodleName =
+type DoodleName =
   | "star"
   | "underline"
   | "rays"
@@ -19,7 +19,6 @@ const TONE: Record<Tone, string> = {
   yellow: "#F8E815",
   green: "#008C24",
   violet: "#331983",
-  ink: "#1E2A36",
 };
 
 const VIEWBOX: Record<DoodleName, string> = {

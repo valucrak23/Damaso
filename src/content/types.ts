@@ -1,6 +1,6 @@
 export type ContentStatus = "confirmed" | "pending-validation";
 
-export type Tone = "turquoise" | "blue" | "orange" | "yellow" | "green" | "violet" | "ink";
+export type Tone = "turquoise" | "blue" | "orange" | "yellow" | "green" | "violet";
 
 export type CardTone = "turquoise" | "orange" | "yellow" | "green";
 
@@ -22,11 +22,9 @@ export type IconName =
   | "arrow";
 
 /** "recorte" = PNG con fondo transparente (por ejemplo la mascota), sin marco. */
-export type MediaKind = "foto" | "video" | "produccion-alumno" | "simbolo" | "recorte";
+export type MediaKind = "foto" | "video" | "produccion-alumno" | "recorte";
 
-export type VideoProvider = "youtube" | "vimeo" | "mp4";
-
-export interface TitlePart {
+interface TitlePart {
   text: string;
   tone: Tone;
   underline?: boolean;
@@ -38,7 +36,6 @@ export interface EditorialParagraph {
   text: string;
   /** false = se conserva en datos pero no se muestra en la página. */
   inLayout: boolean;
-  note?: string;
 }
 
 export interface MediaSlot {
@@ -72,9 +69,8 @@ export interface VideoSlot {
   label: string;
   caption: string;
   suggestion: string;
-  provider?: VideoProvider;
+  /** Archivo mp4 de Contenido/Multimedia; sin archivo se muestra un recuadro de video pendiente. */
   src?: string;
-  poster?: string;
 }
 
 export type CardLayout = "feature" | "note" | "band" | "pending";

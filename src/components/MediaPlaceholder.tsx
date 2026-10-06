@@ -29,7 +29,7 @@ function PosterFrameVideo({ src, posterAt, label }: { src: string; posterAt?: nu
   );
 }
 
-export type MediaFrame = "print" | "plain" | "sheet" | "round" | "cutout";
+type MediaFrame = "print" | "plain" | "sheet" | "round" | "cutout";
 
 type MediaPlaceholderProps = {
   slot: MediaSlot;
@@ -45,7 +45,6 @@ const KIND_LABEL: Record<MediaSlot["kind"], string> = {
   foto: "FOTO",
   video: "VIDEO",
   "produccion-alumno": "DIBUJO",
-  simbolo: "SÍMBOLO",
   recorte: "IMAGEN",
 };
 
