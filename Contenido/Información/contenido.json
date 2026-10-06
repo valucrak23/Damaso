@@ -232,7 +232,8 @@
       "archivo": "video con dibujos que hacen los niños.mp4",
       "etiqueta": "Dibujos de los alumnos",
       "descripcion": "Video con dibujos hechos por los alumnos.",
-      "orientacion": "horizontal"
+      "orientacion": "horizontal",
+      "reproduccion": "boomerang"
     }
   },
 
