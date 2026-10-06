@@ -1,0 +1,113 @@
+:root {
+  --color-turquoise: #0171bb;
+  --color-blue: #005090;
+  --color-green: #008c24;
+  --color-orange: #ff8d32;
+  /* Naranja para texto sobre papel: #ff8d32 no llega a 3:1 en títulos. */
+  --color-orange-text: #d45f08;
+  --color-yellow: #f8e815;
+  --color-violet: #331983;
+  --color-stage: #dfe6ee;
+  --color-paper: #fffdf7;
+  --color-paper-warm: #fbf3e2;
+  --color-placeholder: #ece7df;
+  --color-ink: #1e2a36;
+  --color-ink-soft: #46535f;
+  --color-line: #d8dde4;
+  --color-white: #ffffff;
+
+  --font-display: "Baloo 2", "Nunito", "Trebuchet MS", sans-serif;
+  --font-body: "Nunito", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-hand: "Caveat", "Segoe Print", cursive;
+
+  --flip-ms: 650ms;
+  --flip-ease: cubic-bezier(0.22, 0.72, 0.18, 1);
+  --shadow-book: 0 22px 44px rgb(30 42 54 / 0.18);
+  --focus: 3px solid var(--color-orange);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  max-height: 100svh;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-stage);
+  line-height: 1.45;
+}
+
+button,
+a {
+  font-family: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  line-height: 1.02;
+  margin: 0;
+  font-weight: 800;
+}
+
+p {
+  margin: 0;
+}
+
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 20;
+  padding: 0.45rem 0.7rem;
+  background: var(--color-blue);
+  color: white;
+  text-decoration: none;
+  border-radius: 999px;
+}
+
+:where(a:any-link, button):focus-visible {
+  outline: var(--focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

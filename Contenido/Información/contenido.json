@@ -1,0 +1,344 @@
+{
+  "_COMO_EDITAR": [
+    "Este archivo contiene TODOS los textos e imágenes que se ven en la revista del Nivel Primario.",
+    "Se pueden cambiar los textos que están entre comillas a la derecha de los dos puntos. No borrar las comillas, las comas ni las llaves { }.",
+    "Las fotos y videos se guardan en la carpeta Contenido/Multimedia. En \"archivo\" va el nombre EXACTO del archivo (con espacios, tildes y extensión, por ejemplo \"niñas disfrazadas.jpeg\").",
+    "Si \"archivo\" queda vacío (\"\"), la revista muestra un recuadro gris con el texto de \"textoSiFalta\".",
+    "\"mostrar\": true = se ve en la revista. \"mostrar\": false = el texto se guarda pero no aparece.",
+    "\"estado\": \"confirmado\" o \"a validar\". Lo que está \"a validar\" aparece con una etiqueta de PENDIENTE.",
+    "Colores posibles: \"azul\", \"celeste\", \"naranja\", \"verde\", \"amarillo\", \"violeta\".",
+    "Íconos posibles: \"libro\", \"lista\", \"dialogo\", \"destello\", \"reloj\", \"mochila\", \"sol\", \"ubicacion\", \"telefono\", \"escalera\", \"puente\", \"personas\", \"cubiertos\", \"cuadricula\".",
+    "\"encuadre\" mueve la foto dentro del marco: \"center\", \"top\", \"bottom\", \"center 30%\" (30% = más arriba), etc.",
+    "\"ajuste\": \"completa\" = la foto se ve entera, sin recortar (el marco toma solo la forma de la foto, aunque se recorte o se cambie el archivo). Sin \"ajuste\", la foto se recorta para llenar el marco.",
+    "En los videos, \"orientacion\": \"vertical\" (grabado con el celular parado) u \"horizontal\".",
+    "En los videos, \"reproduccion\": \"boomerang\" (arranca solo, sin sonido, va y vuelve), \"automatica\" (arranca solo, sin sonido, se repite) o \"controles\" (se reproduce al tocar play, con sonido). Si no se pone nada, es \"controles\".",
+    "En los videos, \"proporcion\" + \"encuadre\" recortan el video a otro formato: por ejemplo un video vertical con \"proporcion\": \"4:3\" y \"encuadre\": \"center 45%\" muestra solo la franja del medio.",
+    "En los videos con controles, \"portadaEnSegundo\" elige qué momento del video se ve como imagen de portada (por ejemplo 1 = el segundo 1). Al darle play arranca igual desde el principio.",
+    "Las notas internas y borradores que NO se publican están en el archivo notas-internas-NO-SE-PUBLICA.json (la web nunca lo lee).",
+    "Antes de publicar, alguien que maneje el sitio tiene que revisar que el archivo siga siendo un JSON válido (por ejemplo en https://jsonlint.com)."
+  ],
+
+  "institucion": {
+    "nombre": "Instituto Social Militar Dr. Dámaso Centeno",
+    "nombreCorto": "Dámaso Centeno",
+    "nivel": "Nivel Primario"
+  },
+
+  "logo": {
+    "archivo": "logoConNombre.png",
+    "textoAlternativo": "Instituto Social Militar Dr. Dámaso Centeno"
+  },
+
+  "navegacion": {
+    "ayudaComputadora": "Usá ← → para recorrer la revista",
+    "ayudaCelular": "Deslizá o pasá la página"
+  },
+
+  "botones": {
+    "ingreso": {
+      "texto": "Información sobre ingreso",
+      "enlace": "#ingreso",
+      "_pendiente": "Falta el enlace real de la página de ingreso."
+    },
+    "contacto": {
+      "texto": "Contacto",
+      "enlace": "#contacto",
+      "_pendiente": "Falta el enlace real de contacto."
+    }
+  },
+
+  "pagina1_presentacion": {
+    "etiqueta": "Nivel Primario",
+    "titulo": "Aprender, comprender y crecer",
+    "tituloEnLineas": [
+      [{ "texto": "Aprender,", "color": "azul" }],
+      [{ "texto": "comprender", "color": "naranja" }],
+      [
+        { "texto": "y ", "color": "azul" },
+        { "texto": "crecer", "color": "verde", "subrayado": true }
+      ]
+    ],
+    "introduccion": [
+      {
+        "texto": "De 1.º a 6.º grado, construimos una base de aprendizajes que permite leer, escribir, resolver problemas y comprender el mundo con creciente autonomía.",
+        "mostrar": true
+      },
+      {
+        "texto": "La curiosidad y las preguntas de los estudiantes forman parte de la enseñanza. Proponemos desafíos que los invitan a comprender, explicar sus ideas y trabajar con otros, con un seguimiento cercano de sus aprendizajes.",
+        "mostrar": false
+      }
+    ],
+    "fotoPrincipal": {
+      "archivo": "pijamada primer grado.jpeg",
+      "descripcion": "Alumnos y docentes de primer grado en la pijamada, saludando a la cámara.",
+      "textoSiFalta": "Foto grupal de estudiantes",
+      "proporcion": "1477:738",
+      "ajuste": "completa"
+    },
+    "identidad": {
+      "titulo": "Identidad institucional y comunitaria",
+      "parrafos": [
+        {
+          "texto": "En el Dámaso Centeno, la identidad institucional que construyen los alumnos trasciende el espacio escolar. Se sienten parte de una comunidad que reconoce una historia, unos valores y unas tradiciones vinculadas con el Ejército Argentino y el Ministerio de Defensa.",
+          "mostrar": true
+        },
+        {
+          "texto": "Esta pertenencia se construye cotidianamente a través de los símbolos, los actos, las ceremonias, los valores de respeto, compañerismo, compromiso, responsabilidad y servicio, y también mediante el conocimiento de la historia del Instituto.",
+          "mostrar": true
+        },
+        {
+          "texto": "La identidad con el Ejército no implica solamente una referencia institucional, sino también el reconocimiento de una tradición histórica que forma parte de la vida del colegio y que se transmite de generación en generación.",
+          "mostrar": false
+        }
+      ],
+      "fraseDestacada": "Ser damaseño significa formar parte de una comunidad que acompaña durante años y genera un fuerte sentido de pertenencia.",
+      "parteResaltadaEnAmarillo": "fuerte sentido de pertenencia",
+      "fraseOriginalDelDocumento": "Para muchos alumnos, ser “damaseño” significa formar parte de una comunidad que los acompaña durante años y que genera un fuerte sentido de pertenencia y orgullo institucional."
+    },
+    "dibujo": {
+      "archivo": "dibujo infantil logo damaseño.jpeg",
+      "descripcion": "Dibujo de un alumno de 1.º A con el escudo del colegio, estrellas y corazones.",
+      "textoSiFalta": "Dibujo de un alumno",
+      "proporcion": "3:4",
+      "encuadre": "center"
+    }
+  },
+
+  "pagina2_propuesta": {
+    "titulo": "Nuestra propuesta educativa",
+    "tituloEnLineas": [
+      [{ "texto": "Nuestra propuesta", "color": "azul" }],
+      [{ "texto": "educativa", "color": "naranja", "subrayado": true }]
+    ],
+    "bajada": "Una propuesta que integra el aprendizaje, el desarrollo personal y la vida compartida.",
+    "tarjetas": [
+      {
+        "titulo": "Aprendizajes fundamentales",
+        "texto": "Leer, escribir, resolver problemas matemáticos y conocer el ambiente natural y social son aprendizajes que se profundizan a lo largo de los seis grados.",
+        "estado": "confirmado",
+        "color": "celeste",
+        "icono": "libro"
+      },
+      {
+        "titulo": "Autonomía y responsabilidad",
+        "texto": "Aprender a estudiar también se enseña. Promovemos la organización de tareas, el cuidado de los materiales y la responsabilidad progresiva por el propio trabajo.",
+        "estado": "confirmado",
+        "color": "naranja",
+        "icono": "lista"
+      },
+      {
+        "titulo": "Área destacada",
+        "texto": "Contenido a validar",
+        "estado": "a validar",
+        "color": "amarillo",
+        "icono": "destello",
+        "_pendiente": "Definir con la institución el tema de esta tarjeta (ver notas internas). No asumir todavía que lo deportivo es el reemplazo definitivo."
+      },
+      {
+        "titulo": "Convivencia y participación",
+        "texto": "El diálogo, la cooperación y la construcción de acuerdos forman parte de la vida escolar. Trabajamos el respeto y la resolución pacífica de los conflictos.",
+        "estado": "confirmado",
+        "color": "verde",
+        "icono": "dialogo"
+      }
+    ],
+    "multimedia": {
+      "tipo": "video",
+      "archivo": "video de niños en clase de musica.mp4",
+      "descripcion": "Alumnos en la clase de música.",
+      "textoSiFalta": "Actividad deportiva o proyecto de aula",
+      "etiqueta": "Música",
+      "proporcion": "16:9",
+      "portadaEnSegundo": 1
+    }
+  },
+
+  "pagina3_experiencias": {
+    "titulo": "Experiencias de aprendizaje",
+    "tituloEnLineas": [
+      [{ "texto": "Experiencias", "color": "azul" }],
+      [
+        { "texto": "de ", "color": "azul" },
+        { "texto": "aprendizaje", "color": "naranja", "subrayado": true }
+      ]
+    ],
+    "introduccion": [
+      {
+        "texto": "Los proyectos y las actividades relacionan distintas áreas del conocimiento. Permiten investigar, poner en práctica lo aprendido y comunicar ideas, combinando el trabajo individual con experiencias compartidas.",
+        "mostrar": true
+      },
+      {
+        "texto": "Las salidas educativas, las actividades culturales, la Educación Física y las propuestas con tecnología amplían el trabajo del aula y ofrecen otras formas de aprender y participar.",
+        "mostrar": false
+      }
+    ],
+    "collage": [
+      {
+        "tipo": "foto",
+        "archivo": "niñas disfrazadas.jpeg",
+        "descripcion": "Dos alumnas disfrazadas con flores de colores, tomadas de la mano en el patio.",
+        "textoSiFalta": "Jornada especial",
+        "etiqueta": "Vida escolar",
+        "proporcion": "3:4",
+        "encuadre": "center 40%"
+      },
+      {
+        "tipo": "recorte",
+        "archivo": "damasito.png",
+        "descripcion": "Damasito, la mascota del colegio: un sol con los colores de la bandera, saludando.",
+        "textoSiFalta": "Mascota",
+        "etiqueta": "Damasito",
+        "proporcion": "3:4"
+      },
+      {
+        "tipo": "foto",
+        "archivo": "",
+        "descripcion": "",
+        "textoSiFalta": "Alumnos en un proyecto",
+        "etiqueta": "Proyecto",
+        "proporcion": "4:3",
+        "mostrar": false,
+        "_nota": "Lugar libre para una foto de proyecto o Feria de Ciencias. Poner mostrar: true cuando haya foto."
+      }
+    ],
+    "fraseManuscrita": "Preguntar, investigar, crear y trabajar en equipo.",
+    "feria": {
+      "etiqueta": "Experiencias inmersivas",
+      "titulo": "Feria de Ciencias: una experiencia que nos identifica",
+      "tituloParteDestacada": "Feria de Ciencias:",
+      "tituloResto": "una experiencia que nos identifica",
+      "parrafos": [
+        {
+          "texto": "En el Dámaso Centeno, educar significa brindar a nuestros alumnos oportunidades para preguntar, investigar, crear, trabajar en equipo y asumir un rol protagonista en sus aprendizajes.",
+          "mostrar": true
+        },
+        {
+          "texto": "La Feria de Ciencias es una expresión de nuestra identidad institucional: un espacio en el que el conocimiento se transforma en experiencia y en el que la curiosidad, el compromiso, el trabajo colaborativo y la búsqueda de respuestas cobran vida.",
+          "mostrar": true
+        },
+        {
+          "texto": "A lo largo del año, nuestros alumnos desarrollan proyectos que parten de sus intereses y preguntas, ponen a prueba sus ideas, exploran distintas posibilidades y construyen nuevos conocimientos. En la Feria, tienen la oportunidad de compartir y socializar todo ese recorrido con las familias y con toda la comunidad educativa.",
+          "mostrar": true
+        },
+        {
+          "texto": "Es mucho más que una exposición: es una experiencia que permite descubrir cómo aprenden nuestros alumnos, cómo los acompañamos y qué valores promovemos como institución.",
+          "mostrar": false
+        }
+      ],
+      "fraseFinal": "Una comunidad que aprende, crea, investiga y crece junta.",
+      "fraseFinalOriginalDelDocumento": "En nuestro Dámaso formamos parte de una comunidad que aprende, crea, investiga y crece juntos."
+    },
+    "video": {
+      "archivo": "video con dibujos que hacen los niños.mp4",
+      "etiqueta": "Dibujos de los alumnos",
+      "descripcion": "Video con dibujos hechos por los alumnos.",
+      "orientacion": "horizontal"
+    }
+  },
+
+  "pagina4_familias": {
+    "titulo": "Vínculo con las familias",
+    "tituloEnLineas": [
+      [{ "texto": "Vínculo con", "color": "azul" }],
+      [
+        { "texto": "las ", "color": "azul" },
+        { "texto": "familias", "color": "verde", "subrayado": true }
+      ]
+    ],
+    "introduccion": "Compartir avances, inquietudes y necesidades ayuda a sostener el aprendizaje. Por eso promovemos el diálogo y los encuentros con las familias, con una comunicación que permita construir acuerdos y acompañar a cada estudiante.",
+    "fotoFamilias": {
+      "archivo": "",
+      "descripcion": "",
+      "textoSiFalta": "Encuentro con familias",
+      "proporcion": "4:3",
+      "mostrar": false
+    },
+    "notas": [
+      {
+        "titulo": "Acompañamiento de las trayectorias",
+        "texto": "El seguimiento cotidiano permite reconocer los avances y las dificultades de cada estudiante. Docentes y equipo de conducción trabajan con los profesionales de orientación cuando es necesario, para atender los aprendizajes, la convivencia y las necesidades de acompañamiento.",
+        "icono": "escalera"
+      },
+      {
+        "titulo": "Articulación entre niveles",
+        "texto": "Las propuestas de articulación acompañan tanto el ingreso a 1.º grado como el pasaje a Secundario. El trabajo entre niveles favorece la continuidad de los aprendizajes y prepara a los estudiantes para las nuevas formas de organización escolar.",
+        "icono": "puente"
+      }
+    ],
+    "organizacion": {
+      "titulo": "Organización",
+      "bajada": "Datos principales para organizar la jornada escolar y comunicarse con el nivel.",
+      "datos": [
+        {
+          "etiqueta": "Grados",
+          "textoCompleto": "De 1.º a 6.º grado.",
+          "principal": "1.º a 6.º grado",
+          "secundario": "",
+          "estado": "confirmado",
+          "icono": "mochila"
+        },
+        {
+          "etiqueta": "Jornada",
+          "textoCompleto": "Ingreso 7:40 h. Egreso 12:20 h.",
+          "principal": "7:40 → 12:20 h",
+          "secundario": "Ingreso y egreso",
+          "estado": "confirmado",
+          "icono": "reloj"
+        },
+        {
+          "etiqueta": "Extensión horaria",
+          "textoCompleto": "Propuesta optativa hasta las 17:00 h.",
+          "principal": "Hasta las 17:00 h",
+          "secundario": "Propuesta optativa",
+          "estado": "a validar",
+          "icono": "sol",
+          "_pendiente": "La descripción completa espera la validación de Subregencia."
+        },
+        {
+          "etiqueta": "Áreas específicas",
+          "textoCompleto": "Áreas específicas — información a validar",
+          "principal": "Información a validar",
+          "secundario": "",
+          "estado": "a validar",
+          "icono": "cuadricula"
+        },
+        {
+          "etiqueta": "Sede",
+          "textoCompleto": "Av. Rivadavia 5550, Ciudad Autónoma de Buenos Aires.",
+          "principal": "Av. Rivadavia 5550",
+          "secundario": "Ciudad Autónoma de Buenos Aires",
+          "estado": "confirmado",
+          "icono": "ubicacion"
+        },
+        {
+          "etiqueta": "Contacto",
+          "textoCompleto": "Tel. 4432-3114 / 9061 / 3127",
+          "principal": "4432-3114",
+          "secundario": "9061 · 3127",
+          "estado": "confirmado",
+          "icono": "telefono"
+        }
+      ],
+      "correo": {
+        "direccion": "",
+        "publicar": false,
+        "_pendiente": "Confirmar el correo del Nivel Primario. No se publica hasta validarlo."
+      }
+    },
+    "comedor": {
+      "titulo": "Servicio de comedor",
+      "texto": "Información y contacto del servicio: pendiente de validación.",
+      "estado": "a validar",
+      "_pendiente": "Falta el teléfono/contacto correcto del servicio de comedor."
+    },
+    "video": {
+      "archivo": "video con niños bailando.mp4",
+      "etiqueta": "Vida en Primaria",
+      "descripcion": "Video de alumnos bailando.",
+      "orientacion": "vertical",
+      "reproduccion": "boomerang",
+      "proporcion": "4:3",
+      "encuadre": "center 45%"
+    }
+  }
+}

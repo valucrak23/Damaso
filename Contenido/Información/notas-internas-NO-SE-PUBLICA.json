@@ -1,0 +1,43 @@
+{
+  "_IMPORTANTE": "Este archivo NO se muestra en la web y la web no lo lee. Guarda borradores, comentarios de revisión y pendientes del documento original para que no se pierdan.",
+
+  "comentariosDeRevisionDelDocumento": [
+    {
+      "dondeEstaba": "Página 2 · tarjeta 3 (Inglés e Informática)",
+      "comentario": "Cuidado con inglés, es solo una hora cátedra por semana, es una debilidad no una fortaleza. YO HABLARÍA DE LO DEPORTIVO",
+      "decision": "La tarjeta queda como \"Área destacada · Contenido a validar\". No asumir todavía que lo deportivo es el reemplazo definitivo."
+    },
+    {
+      "dondeEstaba": "Servicio de comedor",
+      "comentario": "NO, SERÍA MEJOR COLOCAR EL TELÉFONO DEL SERVICIO. PRIMARIO NO VENDE EL COMEDOR",
+      "decision": "El comedor queda pendiente hasta tener el contacto validado del servicio."
+    },
+    {
+      "dondeEstaba": "Organización · Contacto",
+      "comentario": "Correo del nivel: [VALIDAR]",
+      "decision": "El correo no se publica hasta confirmarlo."
+    }
+  ],
+
+  "borradoresQueNoSePublican": {
+    "tarjeta3_InglesEInformatica": "Inglés e Informática. Presentes de 1.º a 6.º grado, amplían las posibilidades de comunicarse, explorar información y producir con distintas herramientas.",
+    "areasEspecificas": "Inglés e Informática de 1.º a 6.º grado. Educación Física durante el turno mañana.",
+    "extensionHoraria": "La extensión horaria optativa amplía la jornada hasta las 17:00 h y permite continuar la experiencia escolar durante la tarde. Las familias pueden consultar al nivel por las actividades disponibles, la organización diaria y las condiciones de participación.",
+    "comedor": "El Nivel Primario cuenta con servicio de comedor para sus estudiantes. Las familias pueden consultar al nivel por la modalidad de contratación y las condiciones del servicio."
+  },
+
+  "revisionInternaAntesDePublicar": "Confirmar correo del nivel, teléfonos, horarios y condiciones de la extensión horaria y modalidad de contratación del comedor. Precisar organización por ciclos, oferta de talleres, áreas artísticas y espacios utilizados. Incorporar dos proyectos o salidas representativos. Reemplazar el texto provisional de extensión horaria con la propuesta validada por Subregencia. Para el diseño: mantener cuatro tarjetas y acompañar las imágenes con referencias a las actividades.",
+
+  "pendientes": [
+    "Tarjeta 3 de la página 2: definir el contenido público.",
+    "Extensión horaria: reemplazar la descripción con la propuesta validada por Subregencia.",
+    "Áreas específicas: validar el listado público.",
+    "Correo del Nivel Primario: confirmar antes de publicar.",
+    "Servicio de comedor: incorporar el teléfono/contacto correcto.",
+    "Botones finales: completar los enlaces reales de Información sobre ingreso y Contacto.",
+    "Foto grupal (foto grupal.jpeg): tiene la marca \"Contenido generado por IA\"; no se usa hasta confirmar que es una foto real sin modificar.",
+    "Página 3: falta una foto de proyecto o Feria de Ciencias para el collage."
+  ],
+
+  "textosGuardadosQueNoSeMuestran": "En contenido.json, los párrafos con \"mostrar\": false están completos tal como figuran en el documento; se ocultaron para que la revista no quede sobrecargada."
+}
