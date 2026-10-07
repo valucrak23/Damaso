@@ -99,8 +99,8 @@
       "archivo": "dibujo infantil logo damaseño.jpeg",
       "descripcion": "Dibujo de un alumno de 1.º A con el escudo del colegio, estrellas y corazones.",
       "textoSiFalta": "Dibujo de un alumno",
-      "proporcion": "3:4",
-      "encuadre": "center"
+      "proporcion": "1032:1417",
+      "ajuste": "completa"
     }
   },
 
@@ -188,7 +188,8 @@
         "descripcion": "Damasito, la mascota del colegio: un sol con los colores de la bandera, saludando.",
         "textoSiFalta": "Mascota",
         "etiqueta": "Damasito",
-        "proporcion": "3:4"
+        "proporcion": "370:512",
+        "ajuste": "completa"
       },
       {
         "tipo": "foto",

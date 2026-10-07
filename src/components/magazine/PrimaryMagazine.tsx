@@ -29,6 +29,7 @@ export function PrimaryMagazine() {
   const swipedRef = useRef(false);
   const [overflowPages, setOverflowPages] = useState<number[]>([]);
   const nav = useMagazineNavigation(MAGAZINE_PAGE_COUNT);
+  const { blockSpread } = nav;
   const content = primaryMagazineContent;
 
   const onOverflow = useCallback((pageNumber: number, overflowing: boolean) => {
@@ -57,12 +58,13 @@ export function PrimaryMagazine() {
           side={side}
           inert={inert}
           onOverflow={onOverflow}
+          onNoFit={side === "single" ? undefined : blockSpread}
         >
           <Page />
         </MagazinePage>
       );
     },
-    [onOverflow],
+    [blockSpread, onOverflow],
   );
 
   const spreadFlipped = nav.index >= 2;

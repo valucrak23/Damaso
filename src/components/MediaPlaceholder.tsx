@@ -56,19 +56,20 @@ export function MediaPlaceholder({
   tilt = 0,
   className = "",
 }: MediaPlaceholderProps) {
-  const [naturalRatio, setNaturalRatio] = useState<string>();
+  const [naturalRatio, setNaturalRatio] = useState<[number, number]>();
 
   if (!slot.enabled) return null;
 
-  const [w, h] = slot.ratio.split(":").map(Number);
+  const [w, h] = naturalRatio ?? slot.ratio.split(":").map(Number);
   const style = {
-    "--ratio": naturalRatio ?? `${w} / ${h}`,
+    "--ratio": `${w} / ${h}`,
+    "--ar": w / h,
     "--tilt": `${tilt}deg`,
   } as CSSProperties;
 
   return (
     <figure
-      className={`media media--${frame} ${slot.fit === "contain" ? "media--whole" : ""} ${className}`.replace(/\s+/g, " ").trim()}
+      className={`media media--${frame} ${slot.fit === "contain" || slot.kind === "recorte" ? "media--whole" : ""} ${className}`.replace(/\s+/g, " ").trim()}
       style={style}
       data-slot={slot.id}
       data-suggestion={import.meta.env.DEV ? slot.suggestion : undefined}
@@ -97,8 +98,8 @@ export function MediaPlaceholder({
             }}
             onLoad={(e) => {
               const img = e.currentTarget;
-              if (slot.fit === "contain" && img.naturalHeight) {
-                setNaturalRatio(`${img.naturalWidth} / ${img.naturalHeight}`);
+              if ((slot.fit === "contain" || slot.kind === "recorte") && img.naturalHeight) {
+                setNaturalRatio([img.naturalWidth, img.naturalHeight]);
               }
             }}
           />

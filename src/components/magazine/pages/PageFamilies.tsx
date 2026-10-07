@@ -61,6 +61,7 @@ export function PageFamilies() {
         </div>
 
         <section className="dining" aria-labelledby="p4-dining-title">
+          <span className="dining__blob" aria-hidden="true" />
           <span className="dining__icon">
             <Icon name="utensils" />
           </span>

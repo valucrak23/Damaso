@@ -6,7 +6,7 @@ import { useSpreadMode } from "./useSpreadMode";
 type Direction = "forward" | "back";
 
 export function useMagazineNavigation(pageCount: number) {
-  const spreadMode = useSpreadMode();
+  const [spreadMode, blockSpread] = useSpreadMode();
   const reducedMotion = usePrefersReducedMotion();
   const [index, setIndex] = useState(0);
   const [fromIndex, setFromIndex] = useState(0);
@@ -93,6 +93,7 @@ export function useMagazineNavigation(pageCount: number) {
     fromIndex,
     step,
     spreadMode,
+    blockSpread,
     reducedMotion,
     animating,
     direction,
