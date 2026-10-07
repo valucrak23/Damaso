@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
-/** Doble página en pantallas horizontales desde tablet; una página en celulares y tablet vertical. */
-const SPREAD_QUERY = "(min-width: 700px) and (min-height: 480px) and (orientation: landscape)";
+/**
+ * Doble página solo con ancho suficiente; por debajo de 1280px siempre una página
+ * (evita el estado mixto ~1150px donde entraba spread pero el contenido no alcanzaba).
+ */
+const SPREAD_QUERY = "(min-width: 1280px) and (min-height: 520px) and (orientation: landscape)";
 
 type Size = { w: number; h: number };
 
@@ -21,11 +24,10 @@ export function useSpreadMode() {
   useEffect(() => {
     const media = window.matchMedia(SPREAD_QUERY);
     const update = () => {
+      const next = viewport();
       setMatches(media.matches);
-      setSize((prev) => {
-        const next = viewport();
-        return prev.w === next.w && prev.h === next.h ? prev : next;
-      });
+      setSize((prev) => (prev.w === next.w && prev.h === next.h ? prev : next));
+      if (!media.matches) setBlockedAt(null);
     };
     update();
     media.addEventListener("change", update);

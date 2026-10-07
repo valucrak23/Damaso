@@ -1507,8 +1507,9 @@
 .p3-shot--2 { top: 0; right: 0; width: 40%; z-index: 4; }
 .p3-shot--3 { top: 40%; right: 2%; width: 42%; z-index: 3; }
 
-.p3-collage--2 .p3-shot--1 { top: 0; width: 55%; max-height: 78%; }
-.p3-collage--2 .p3-shot--2 { top: auto; bottom: 6%; right: 0; width: 30%; max-height: 42%; }
+.p3-collage--2 .p3-shot--1 { top: 0; width: 62%; max-height: 90%; }
+.p3-collage--2 .p3-shot--2 { top: auto; bottom: 8%; right: 0; width: 28%; max-height: 34%; }
+.p3-collage--2 .p3-hand { width: 54%; }
 
 [data-layout="fill"] .p3-shot .media__window img {
   object-fit: cover;
@@ -1523,10 +1524,11 @@
 @container page (max-width: 640px) {
   [data-layout="fill"] .p3-collage--2 {
     display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.72fr);
+    grid-template-columns: minmax(0, 1.62fr) minmax(0, 0.62fr);
     grid-template-areas:
       "photo mascot"
       "quote quote";
+    grid-template-rows: minmax(0, 1.38fr) minmax(0, 0.58fr);
     align-items: end;
     gap: 0.45em 0.55em;
     padding: 0.35em 0.15em 0;
@@ -1539,7 +1541,13 @@
     max-height: none;
   }
 
-  [data-layout="fill"] .p3-collage--2 .p3-shot--1 { grid-area: photo; width: auto; align-self: center; }
+  [data-layout="fill"] .p3-collage--2 .p3-shot--1 {
+    grid-area: photo;
+    width: 100%;
+    max-width: 100%;
+    align-self: stretch;
+    justify-self: stretch;
+  }
   [data-layout="fill"] .p3-collage--2 .p3-shot--2 { grid-area: mascot; width: auto; align-self: end; justify-self: end; }
   [data-layout="fill"] .p3-collage--2 .p3-hand {
     position: relative;
@@ -1636,6 +1644,9 @@
 .page--4 {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   column-gap: calc(var(--gap) * 1.2);
+  height: 100%;
+  min-height: 0;
+  align-content: start;
 }
 
 .p4-main,
@@ -1665,12 +1676,10 @@
 
 .p4-heart { width: 1.6em; right: -1.2em; top: 45%; }
 
-/* En la doble página el video recortado llena el alto libre entre Organización y comedor. */
+/* Video con altura fija por proporción: no estirar ni dejar huecos con margin-top: auto. */
 [data-layout="fill"] .p4-video:has(.video--cropped) {
-  flex: 1 1 0;
-  min-height: 18cqi;
-  max-height: 36cqi;
-  display: flex;
+  flex: 0 0 auto;
+  display: block;
 }
 
 /* Doble página apretada: achica bloques antes de pasar a una sola página. */
@@ -1702,9 +1711,8 @@
   font-size: calc(var(--fs-body) * 0.94);
 }
 
-[data-layout="fill"][data-compact="true"] .p4-video:has(.video--cropped) {
-  min-height: 14cqi;
-  max-height: 30cqi;
+[data-layout="fill"][data-compact="true"] .p4-video:has(.video--cropped) .video__window {
+  max-height: 28cqi;
 }
 
 [data-layout="fill"][data-compact="true"] .p4-smile {
@@ -1719,8 +1727,6 @@
   padding: 0.35em 0.65em;
 }
 
-[data-layout="fill"] .p4-aside .dining { margin-top: auto; }
-
 /* La etiqueta del video no debe invadir la caja de Organización. */
 [data-layout="fill"] .p4-aside .p4-video {
   padding-top: 1.15em;
@@ -1731,13 +1737,47 @@
   top: 0.05em;
 }
 
-[data-layout="fill"] .p4-video .video--cropped { flex: 1 1 auto; display: flex; flex-direction: column; }
-[data-layout="fill"] .p4-video .video--cropped .video__window { flex: 1 1 auto; aspect-ratio: auto; min-height: 0; }
+[data-layout="fill"] .p4-video .video--cropped .video__window {
+  aspect-ratio: var(--ratio, 4 / 3);
+  height: auto;
+  max-height: 34cqi;
+}
 
-/* Botones de ingreso y contacto al pie de la columna izquierda. */
+[data-layout="fill"] .p4-aside {
+  gap: calc(var(--gap) * 0.65);
+}
+
+/* La caja Organización ocupa el alto libre; el contenido va centrado, el título arriba. */
+[data-layout="fill"] .p4-aside .p4-org {
+  flex: 1 1 auto;
+  min-height: 20cqi;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+[data-layout="fill"] .p4-aside .p4-org .kicker-title {
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+
+[data-layout="fill"] .p4-aside .p4-org .fichas {
+  flex: 1 1 auto;
+  align-content: center;
+  justify-content: center;
+  justify-items: stretch;
+}
+
+[data-layout="fill"] .p4-aside .p4-org .p4-email {
+  flex: 0 0 auto;
+  align-self: center;
+  text-align: center;
+}
+
+/* Botones de ingreso y contacto, uno debajo del otro, sin hueco de margin auto. */
 .p4-main .cta-row {
-  margin-top: auto;
+  margin-top: 0;
   flex-direction: column;
+  align-items: stretch;
   gap: 0.5em;
   padding-right: 6%;
 }
