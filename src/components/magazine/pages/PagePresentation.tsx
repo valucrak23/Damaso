@@ -1,4 +1,5 @@
 import { primaryMagazineContent } from "../../../content/primaryMagazineContent";
+import { CopyStack } from "../../CopyStack";
 import { Doodle } from "../../Doodle";
 import { EditorialTitle } from "../../EditorialTitle";
 import { Logo } from "../../Logo";
@@ -18,13 +19,20 @@ export function PagePresentation() {
       </header>
 
       <div className="p1-opening">
-        <EditorialTitle lines={page.titleLines} label={page.title} level={1} className="p1-title" />
-        <Doodle name="rays" tone="orange" className="p1-rays" />
-        {lead.map((p) => (
-          <p className="lead" key={p.text}>
-            {p.text}
-          </p>
-        ))}
+        <CopyStack
+          head={
+            <>
+              <EditorialTitle lines={page.titleLines} label={page.title} level={1} className="p1-title" />
+              <Doodle name="rays" tone="orange" className="p1-rays" />
+            </>
+          }
+        >
+          {lead.map((p) => (
+            <p className="lead" key={p.text}>
+              {p.text}
+            </p>
+          ))}
+        </CopyStack>
       </div>
 
       <div className="p1-hero">
@@ -35,12 +43,17 @@ export function PagePresentation() {
 
       <section className="p1-identity" aria-labelledby="p1-identity-title">
         <div className="p1-identity__text">
-          <h2 className="kicker-title" id="p1-identity-title">
-            {page.identity.title}
-          </h2>
-          {identity.map((p) => (
-            <p key={p.text}>{p.text}</p>
-          ))}
+          <CopyStack
+            head={
+              <h2 className="kicker-title" id="p1-identity-title">
+                {page.identity.title}
+              </h2>
+            }
+          >
+            {identity.map((p) => (
+              <p key={p.text}>{p.text}</p>
+            ))}
+          </CopyStack>
           <QuoteBlock
             text={page.identity.highlightedDisplay}
             emphasis={page.identity.highlightedEmphasis}

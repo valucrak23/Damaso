@@ -1,4 +1,5 @@
 import { primaryMagazineContent } from "../../../content/primaryMagazineContent";
+import { CopyStack } from "../../CopyStack";
 import { Doodle } from "../../Doodle";
 import { EditorialCard } from "../../EditorialCard";
 import { EditorialTitle } from "../../EditorialTitle";
@@ -10,9 +11,16 @@ export function PageProposal() {
   return (
     <div className="page page--2">
       <header className="p2-head">
-        <EditorialTitle lines={page.titleLines} label={page.title} className="p2-title" />
-        <p className="kicker">{page.kicker}</p>
-        <Doodle name="arrow" tone="turquoise" className="p2-arrow" />
+        <CopyStack
+          head={
+            <>
+              <EditorialTitle lines={page.titleLines} label={page.title} className="p2-title" />
+              <Doodle name="arrow" tone="turquoise" className="p2-arrow" />
+            </>
+          }
+        >
+          <p className="kicker">{page.kicker}</p>
+        </CopyStack>
       </header>
 
       <div className="p2-photo">
@@ -24,6 +32,7 @@ export function PageProposal() {
           sticker={page.media.label ? { text: page.media.label, tone: "orange" } : undefined}
         />
         <Doodle name="star" tone="green" className="p2-star" />
+        <Doodle name="leaf" tone="green" className="p2-leaf" />
       </div>
 
       <div className="p2-cards">
@@ -31,8 +40,6 @@ export function PageProposal() {
           <EditorialCard card={card} key={card.id} className={`p2-card p2-card--${card.id}`} />
         ))}
       </div>
-
-      <Doodle name="leaf" tone="green" className="p2-leaf" />
       <Doodle name="dots" tone="orange" className="p2-dots" />
     </div>
   );

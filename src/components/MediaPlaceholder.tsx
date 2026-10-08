@@ -96,6 +96,11 @@ export function MediaPlaceholder({
               objectPosition: slot.objectPosition,
               objectFit: slot.fit === "contain" ? "contain" : undefined,
             }}
+            onError={() => {
+              if (import.meta.env.DEV) {
+                console.warn("[Dámaso · dev] No se pudo cargar:", slot.src, "— ¿Corriste npm run dev en la carpeta del proyecto?");
+              }
+            }}
             onLoad={(e) => {
               const img = e.currentTarget;
               if ((slot.fit === "contain" || slot.kind === "recorte") && img.naturalHeight) {

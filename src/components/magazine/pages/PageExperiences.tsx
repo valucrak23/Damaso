@@ -1,5 +1,6 @@
 import type { Tone } from "../../../content/types";
 import { primaryMagazineContent } from "../../../content/primaryMagazineContent";
+import { CopyStack } from "../../CopyStack";
 import { Doodle } from "../../Doodle";
 import { EditorialTitle } from "../../EditorialTitle";
 import { MediaPlaceholder } from "../../MediaPlaceholder";
@@ -21,12 +22,15 @@ export function PageExperiences() {
   return (
     <div className="page page--3">
       <header className="p3-head">
-        <EditorialTitle lines={page.titleLines} label={page.title} className="p3-title" />
-        {lead.map((p) => (
-          <p className="lead" key={p.text}>
-            {p.text}
-          </p>
-        ))}
+        <CopyStack
+          head={<EditorialTitle lines={page.titleLines} label={page.title} className="p3-title" />}
+        >
+          {lead.map((p) => (
+            <p className="lead" key={p.text}>
+              {p.text}
+            </p>
+          ))}
+        </CopyStack>
       </header>
 
       <div className={`p3-collage p3-collage--${shots.length}`}>
@@ -46,16 +50,19 @@ export function PageExperiences() {
         })}
         <QuoteBlock text={page.feria.pullQuote} variant="hand" className="p3-hand" />
         <Doodle name="plane" tone="turquoise" className="p3-plane" />
+        <Doodle name="star" tone="yellow" className="p3-collage-star" />
       </div>
 
       <section className="p3-feria" aria-labelledby="p3-feria-title">
-        <span className="pill pill--turquoise">{page.feria.eyebrow}</span>
-        <h3 id="p3-feria-title" className="p3-feria__title">
-          <span className="tone-orange">{page.feria.titleLead}</span> {page.feria.titleRest}
-        </h3>
-        {feriaParagraphs.map((p) => (
-          <p key={p.text}>{p.text}</p>
-        ))}
+        <div className="p3-feria__copy">
+          <span className="pill pill--turquoise">{page.feria.eyebrow}</span>
+          <h3 id="p3-feria-title" className="p3-feria__title">
+            <span className="tone-orange">{page.feria.titleLead}</span> {page.feria.titleRest}
+          </h3>
+          {feriaParagraphs.map((p) => (
+            <p key={p.text}>{p.text}</p>
+          ))}
+        </div>
       </section>
 
       <div className="p3-side">

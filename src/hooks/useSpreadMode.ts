@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
 /**
- * Doble página solo con ancho suficiente; por debajo de 1280px siempre una página
- * (evita el estado mixto ~1150px donde entraba spread pero el contenido no alcanzaba).
+ * Doble página desde 1370px (1366×768 = una hoja apaisada horizontal).
+ * Por debajo: una página (stack); tablets/celulares incluidos.
  */
-const SPREAD_QUERY = "(min-width: 1280px) and (min-height: 520px) and (orientation: landscape)";
+const SPREAD_QUERY = "(min-width: 1370px) and (min-height: 520px) and (orientation: landscape)";
+const SPREAD_MIN_WIDTH = 1370;
 
 type Size = { w: number; h: number };
 
@@ -27,7 +28,7 @@ export function useSpreadMode() {
       const next = viewport();
       setMatches(media.matches);
       setSize((prev) => (prev.w === next.w && prev.h === next.h ? prev : next));
-      if (!media.matches) setBlockedAt(null);
+      if (media.matches) setBlockedAt(null);
     };
     update();
     media.addEventListener("change", update);
@@ -46,10 +47,9 @@ export function useSpreadMode() {
   const blocked = blockedAt !== null && size.w <= blockedAt.w && size.h <= blockedAt.h;
 
   const blockSpread = useCallback(() => {
-    setBlockedAt((prev) => {
-      const next = viewport();
-      return prev && prev.w >= next.w && prev.h >= next.h ? prev : next;
-    });
+    const next = viewport();
+    if (next.w >= SPREAD_MIN_WIDTH) return;
+    setBlockedAt((prev) => (prev && prev.w >= next.w && prev.h >= next.h ? prev : next));
   }, []);
 
   return [matches && !blocked, blockSpread] as const;

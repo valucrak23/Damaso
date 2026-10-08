@@ -97,8 +97,12 @@ const CARD_LAYOUTS: CardLayout[] = ["feature", "note", "pending", "band"];
 
 /** Archivos de Contenido/Multimedia (Vite los publica tal cual en la raíz del sitio). */
 function mediaUrl(file?: string) {
-  if (!file) return undefined;
-  return `${import.meta.env.BASE_URL}${encodeURIComponent(file)}`;
+  const trimmed = file?.trim();
+  if (!trimmed) return undefined;
+  const normalized = trimmed.normalize("NFC");
+  const encoded = normalized.split("/").map((segment) => encodeURIComponent(segment)).join("/");
+  const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+  return `${base}${encoded}`;
 }
 
 const status = (estado?: string): ContentStatus =>
@@ -189,7 +193,6 @@ export const primaryMagazineContent = {
         paragraphs: identityParagraphs,
         highlightedDisplay: p1.identidad.fraseDestacada,
         highlightedEmphasis: p1.identidad.parteResaltadaEnAmarillo,
-        highlightedOriginal: p1.identidad.fraseOriginalDelDocumento,
       },
       secondaryMedia: media("p1-student-art", p1.dibujo, "produccion-alumno"),
     },
@@ -227,7 +230,6 @@ export const primaryMagazineContent = {
         pullQuote: p3.fraseManuscrita,
         paragraphs: paragraphs(p3.feria.parrafos),
         closingDisplay: p3.feria.fraseFinal,
-        closingOriginal: p3.feria.fraseFinalOriginalDelDocumento,
       },
       video: video("video-1", p3.video),
     },

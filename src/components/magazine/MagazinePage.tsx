@@ -1,5 +1,18 @@
-import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MutableRefObject,
+  type ReactNode,
+} from "react";
+import {
+  getPageScrollRoot,
+  readPageScrollState,
+} from "./pageScroll";
 import { PageActiveContext } from "./PageActiveContext";
+
+type ScrollApi = { scrollDown: () => void };
 
 type MagazinePageProps = {
   pageNumber: number;
@@ -10,6 +23,9 @@ type MagazinePageProps = {
   onOverflow?: (pageNumber: number, overflowing: boolean) => void;
   /** En la doble página: la composición no entra sin scroll, hay que pasar a una página por vez. */
   onNoFit?: () => void;
+  /** Modo una hoja activa: indica si scrollea y si el lector llegó al final. */
+  onScrollState?: (scrolls: boolean, atEnd: boolean) => void;
+  scrollApiRef?: MutableRefObject<ScrollApi | null>;
 };
 
 /** Por debajo de esta proporción (ancho/alto) la doble página no se usa: queda muy angosta. */
@@ -17,13 +33,17 @@ const MIN_SPREAD_RATIO = 0.62;
 /** Escala mínima de tipografía/espaciado al ajustar; el cuerpo además nunca baja de 12.5px (CSS). */
 const MIN_FIT = 0.8;
 const FIT_STEP = 0.04;
+const SPREAD_MIN_WIDTH = 1370;
 
 function contentOverflows(element: HTMLElement) {
   const page = element.querySelector<HTMLElement>(".page");
-  if (element.scrollHeight > element.clientHeight + 2) return true;
+  const inner = element.querySelector<HTMLElement>(".magazine-page__inner");
+  const measure = inner ?? element;
+
+  if (measure.scrollHeight > measure.clientHeight + 2) return true;
   if (page !== null && page.scrollHeight > page.clientHeight + 2) return true;
 
-  const clip = element.getBoundingClientRect();
+  const clip = measure.getBoundingClientRect();
   const clipBottom = clip.bottom - 2;
 
   if (page) {
@@ -67,20 +87,32 @@ export function MagazinePage({
   inert = false,
   onOverflow,
   onNoFit,
+  onScrollState,
+  scrollApiRef,
 }: MagazinePageProps) {
   const ref = useRef<HTMLElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const atEndLatchRef = useRef(true);
   const [size, setSize] = useState({ w: 0, h: 0, fonts: 0 });
   const [fit, setFit] = useState(1);
   const [scrolls, setScrolls] = useState(false);
-  const [atEnd, setAtEnd] = useState(false);
 
-  const updateAtEnd = () => {
-    const element = ref.current;
-    if (element) setAtEnd(element.scrollTop + element.clientHeight >= element.scrollHeight - 24);
+  const publishScroll = (nextScrolls: boolean, nextAtEnd: boolean) => {
+    if (inert || side !== "single") return;
+    onScrollState?.(nextScrolls, nextAtEnd);
   };
 
-  const readMore = () => {
-    ref.current?.scrollBy({ top: ref.current.clientHeight * 0.8, behavior: "smooth" });
+  const measureScroll = () => {
+    const article = ref.current;
+    if (!article || side !== "single" || inert) return;
+    const root = getPageScrollRoot(article);
+    const { scrolls: nextScrolls, atEnd: nextAtEnd } = readPageScrollState(
+      root,
+      atEndLatchRef.current,
+    );
+    atEndLatchRef.current = nextAtEnd;
+    setScrolls(nextScrolls);
+    publishScroll(nextScrolls, nextAtEnd);
   };
 
   useLayoutEffect(() => {
@@ -108,12 +140,61 @@ export function MagazinePage({
   useLayoutEffect(() => {
     setFit(1);
     setScrolls(false);
+    atEndLatchRef.current = true;
   }, [size]);
 
   const layout = side === "single" ? "stack" : "fill";
 
-  /* Doble página: reduce la escala hasta MIN_FIT y, si igual no entra, pide pasar a una página
-     por vez. Una página por vez: composición apilada que scrollea si hace falta. */
+  useLayoutEffect(() => {
+    const article = ref.current;
+    const inner = innerRef.current;
+    if (!article || side !== "single" || inert) {
+      if (scrollApiRef) scrollApiRef.current = null;
+      return;
+    }
+
+    const root = () => getPageScrollRoot(article);
+
+    if (scrollApiRef) {
+      scrollApiRef.current = {
+        scrollDown: () => {
+          root().scrollBy({ top: root().clientHeight * 0.78, behavior: "smooth" });
+        },
+      };
+    }
+
+    const onScroll = () => measureScroll();
+    const scrollRoot = root();
+    scrollRoot.addEventListener("scroll", onScroll, { passive: true });
+
+    const ro = new ResizeObserver(() => measureScroll());
+    ro.observe(scrollRoot);
+    if (inner && inner !== scrollRoot) ro.observe(inner);
+
+    const media = inner?.querySelectorAll("img, video") ?? [];
+    for (const node of media) {
+      node.addEventListener("load", measureScroll);
+      if (node instanceof HTMLVideoElement) {
+        node.addEventListener("loadedmetadata", measureScroll);
+      }
+    }
+
+    measureScroll();
+
+    return () => {
+      scrollRoot.removeEventListener("scroll", onScroll);
+      ro.disconnect();
+      for (const node of media) {
+        node.removeEventListener("load", measureScroll);
+        if (node instanceof HTMLVideoElement) {
+          node.removeEventListener("loadedmetadata", measureScroll);
+        }
+      }
+      if (scrollApiRef) scrollApiRef.current = null;
+    };
+  }, [inert, scrollApiRef, side, size]);
+
+  /* Doble página: reduce la escala hasta MIN_FIT; en ≥1370 no baja a una hoja. */
   useLayoutEffect(() => {
     const element = ref.current;
     if (!element || size.h === 0) return;
@@ -122,14 +203,11 @@ export function MagazinePage({
       return;
     }
     if (side === "single") {
-      const overflowing = element.scrollHeight > element.clientHeight + 2;
-      setScrolls(overflowing);
-      updateAtEnd();
       onOverflow?.(pageNumber, false);
       return;
     }
     if (size.w / size.h < MIN_SPREAD_RATIO) {
-      onNoFit?.();
+      if (window.innerWidth < SPREAD_MIN_WIDTH) onNoFit?.();
       return;
     }
     if (!contentOverflows(element)) {
@@ -140,7 +218,7 @@ export function MagazinePage({
       setFit((current) => Math.max(MIN_FIT, Number((current - FIT_STEP).toFixed(2))));
     } else {
       onOverflow?.(pageNumber, true);
-      onNoFit?.();
+      if (window.innerWidth < SPREAD_MIN_WIDTH) onNoFit?.();
     }
   }, [fit, inert, onNoFit, onOverflow, pageNumber, side, size]);
 
@@ -157,27 +235,13 @@ export function MagazinePage({
       data-overflow={scrolls ? "true" : "false"}
       data-compact={side !== "single" && fit < 0.94 ? "true" : undefined}
       style={{ "--fit": fit } as CSSProperties}
-      onScroll={scrolls ? updateAtEnd : undefined}
     >
-      <div className="magazine-page__inner">
-        <span className="page-decor" aria-hidden="true">
-          <span className="page-blob page-blob--a" />
-          <span className="page-blob page-blob--b" />
-        </span>
+      <span className="page-decor" aria-hidden="true">
+        <span className="page-blob page-blob--a" />
+        <span className="page-blob page-blob--b" />
+      </span>
+      <div className="magazine-page__inner" ref={innerRef}>
         <PageActiveContext.Provider value={!inert}>{children}</PageActiveContext.Provider>
-        <span className="page-number" aria-hidden="true">
-          {pageNumber}
-        </span>
-        {scrolls ? (
-          <div className={`scroll-cue${atEnd ? " is-hidden" : ""}`}>
-            <button type="button" className="scroll-cue__button" onClick={readMore} tabIndex={atEnd ? -1 : 0}>
-              Seguí leyendo
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 5v13m0 0-5.5-5.5M12 18l5.5-5.5" />
-              </svg>
-            </button>
-          </div>
-        ) : null}
       </div>
     </article>
   );

@@ -1,0 +1,5 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Los archivos estáticos (fotos/videos en dist/) se sirven antes que cualquier redirect SPA.

@@ -9,8 +9,7 @@ type DoodleName =
   | "dots"
   | "leaf"
   | "heart"
-  | "smile"
-  | "blob";
+  | "smile";
 
 const TONE: Record<Tone, string> = {
   turquoise: "#0171BB",
@@ -31,7 +30,6 @@ const VIEWBOX: Record<DoodleName, string> = {
   leaf: "0 0 40 40",
   heart: "0 0 40 36",
   smile: "0 0 40 40",
-  blob: "0 0 200 170",
 };
 
 type DoodleProps = {
@@ -54,7 +52,7 @@ export function Doodle({ name, tone = "orange", className = "" }: DoodleProps) {
     <svg
       className={`doodle doodle--${name} ${className}`.trim()}
       viewBox={VIEWBOX[name]}
-      preserveAspectRatio={name === "underline" || name === "blob" ? "none" : undefined}
+      preserveAspectRatio={name === "underline" ? "none" : undefined}
       aria-hidden="true"
       focusable="false"
     >
@@ -79,7 +77,9 @@ export function Doodle({ name, tone = "orange", className = "" }: DoodleProps) {
       ) : null}
       {name === "plane" ? (
         <>
-          <path {...stroke} strokeDasharray="4 6" d="M4 52c14-2 22-10 30-18 10-10 24-14 42-12" />
+          <g transform="translate(0, 9)">
+            <path {...stroke} strokeDasharray="4 6" d="M4 52c14-2 22-10 30-18 10-10 24-14 42-12" />
+          </g>
           <path {...stroke} d="m78 22 38-16-16 38-7-14z" />
           <path {...stroke} d="m93 30 23-24" />
         </>
@@ -108,12 +108,6 @@ export function Doodle({ name, tone = "orange", className = "" }: DoodleProps) {
           <circle fill={c} cx="14.5" cy="16" r="1.8" />
           <circle fill={c} cx="25.5" cy="16" r="1.8" />
         </>
-      ) : null}
-      {name === "blob" ? (
-        <path
-          fill={c}
-          d="M34 18C74-6 150-2 184 34c26 28 18 88-18 110-40 25-120 24-150-10C-12 102-6 42 34 18z"
-        />
       ) : null}
     </svg>
   );
