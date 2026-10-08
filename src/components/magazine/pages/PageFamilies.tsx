@@ -38,6 +38,11 @@ export function PageFamilies() {
             </CopyStack>
           </section>
         ))}
+
+        <div className="cta-row">
+          <CTAButton href={cta.admission.href} label={cta.admission.label} variant="primary" />
+          <CTAButton href={cta.contact.href} label={cta.contact.label} variant="secondary" />
+        </div>
       </div>
 
       <div className="p4-aside">
@@ -83,11 +88,6 @@ export function PageFamilies() {
             </p>
           </CopyStack>
         </section>
-      </div>
-
-      <div className="cta-row">
-        <CTAButton href={cta.admission.href} label={cta.admission.label} variant="primary" />
-        <CTAButton href={cta.contact.href} label={cta.contact.label} variant="secondary" />
       </div>
 
       <Doodle name="smile" tone="yellow" className="p4-smile" />

@@ -7,8 +7,6 @@ type PageNavigationProps = {
   onPrev: () => void;
   onNext: () => void;
   visible?: boolean;
-  showScrollCue?: boolean;
-  onScrollCue?: () => void;
   showScrollDown?: boolean;
   onScrollDown?: () => void;
 };
@@ -22,21 +20,11 @@ export function PageNavigation({
   onPrev,
   onNext,
   visible = true,
-  showScrollCue = false,
-  onScrollCue,
   showScrollDown = false,
   onScrollDown,
 }: PageNavigationProps) {
   return (
     <div className={`page-nav-wrap${visible ? "" : " is-hidden"}`}>
-      {showScrollCue ? (
-        <button type="button" className="scroll-cue__button scroll-cue-nav" onClick={onScrollCue}>
-          Seguí leyendo
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 5v13m0 0-5.5-5.5M12 18l5.5-5.5" />
-          </svg>
-        </button>
-      ) : null}
       <div className="page-nav-cluster">
         {showScrollDown ? (
           <button

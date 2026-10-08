@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react";
  * Por debajo: una página (stack); tablets/celulares incluidos.
  */
 const SPREAD_QUERY = "(min-width: 1370px) and (min-height: 520px) and (orientation: landscape)";
-const SPREAD_MIN_WIDTH = 1370;
 
 type Size = { w: number; h: number };
 
@@ -28,7 +27,7 @@ export function useSpreadMode() {
       const next = viewport();
       setMatches(media.matches);
       setSize((prev) => (prev.w === next.w && prev.h === next.h ? prev : next));
-      if (media.matches) setBlockedAt(null);
+      if (!media.matches) setBlockedAt(null);
     };
     update();
     media.addEventListener("change", update);
@@ -47,9 +46,10 @@ export function useSpreadMode() {
   const blocked = blockedAt !== null && size.w <= blockedAt.w && size.h <= blockedAt.h;
 
   const blockSpread = useCallback(() => {
-    const next = viewport();
-    if (next.w >= SPREAD_MIN_WIDTH) return;
-    setBlockedAt((prev) => (prev && prev.w >= next.w && prev.h >= next.h ? prev : next));
+    setBlockedAt((prev) => {
+      const next = viewport();
+      return prev && prev.w >= next.w && prev.h >= next.h ? prev : next;
+    });
   }, []);
 
   return [matches && !blocked, blockSpread] as const;

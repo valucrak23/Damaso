@@ -1,18 +1,5 @@
-import {
-  useLayoutEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type MutableRefObject,
-  type ReactNode,
-} from "react";
-import {
-  getPageScrollRoot,
-  readPageScrollState,
-} from "./pageScroll";
+import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { PageActiveContext } from "./PageActiveContext";
-
-type ScrollApi = { scrollDown: () => void };
 
 type MagazinePageProps = {
   pageNumber: number;
@@ -23,9 +10,8 @@ type MagazinePageProps = {
   onOverflow?: (pageNumber: number, overflowing: boolean) => void;
   /** En la doble página: la composición no entra sin scroll, hay que pasar a una página por vez. */
   onNoFit?: () => void;
-  /** Modo una hoja activa: indica si scrollea y si el lector llegó al final. */
+  /** Modo una hoja: indica si la página scrollea y si el lector llegó al final. */
   onScrollState?: (scrolls: boolean, atEnd: boolean) => void;
-  scrollApiRef?: MutableRefObject<ScrollApi | null>;
 };
 
 /** Por debajo de esta proporción (ancho/alto) la doble página no se usa: queda muy angosta. */
@@ -33,17 +19,20 @@ const MIN_SPREAD_RATIO = 0.62;
 /** Escala mínima de tipografía/espaciado al ajustar; el cuerpo además nunca baja de 12.5px (CSS). */
 const MIN_FIT = 0.8;
 const FIT_STEP = 0.04;
-const SPREAD_MIN_WIDTH = 1370;
+
+function pageScrollRoot(article: HTMLElement) {
+  if (article.dataset.layout === "stack") {
+    return article.querySelector<HTMLElement>(".magazine-page__inner") ?? article;
+  }
+  return article;
+}
 
 function contentOverflows(element: HTMLElement) {
   const page = element.querySelector<HTMLElement>(".page");
-  const inner = element.querySelector<HTMLElement>(".magazine-page__inner");
-  const measure = inner ?? element;
-
-  if (measure.scrollHeight > measure.clientHeight + 2) return true;
+  if (element.scrollHeight > element.clientHeight + 2) return true;
   if (page !== null && page.scrollHeight > page.clientHeight + 2) return true;
 
-  const clip = measure.getBoundingClientRect();
+  const clip = element.getBoundingClientRect();
   const clipBottom = clip.bottom - 2;
 
   if (page) {
@@ -88,31 +77,39 @@ export function MagazinePage({
   onOverflow,
   onNoFit,
   onScrollState,
-  scrollApiRef,
 }: MagazinePageProps) {
   const ref = useRef<HTMLElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  const atEndLatchRef = useRef(true);
   const [size, setSize] = useState({ w: 0, h: 0, fonts: 0 });
   const [fit, setFit] = useState(1);
   const [scrolls, setScrolls] = useState(false);
+  const [atEnd, setAtEnd] = useState(false);
 
-  const publishScroll = (nextScrolls: boolean, nextAtEnd: boolean) => {
-    if (inert || side !== "single") return;
-    onScrollState?.(nextScrolls, nextAtEnd);
+  const readScrollState = (element: HTMLElement) => {
+    const root = pageScrollRoot(element);
+    const scrolls = root.scrollHeight > root.clientHeight + 2;
+    const atEnd = root.scrollTop + root.clientHeight >= root.scrollHeight - 24;
+    return { root, scrolls, atEnd };
   };
 
-  const measureScroll = () => {
-    const article = ref.current;
-    if (!article || side !== "single" || inert) return;
-    const root = getPageScrollRoot(article);
-    const { scrolls: nextScrolls, atEnd: nextAtEnd } = readPageScrollState(
-      root,
-      atEndLatchRef.current,
-    );
-    atEndLatchRef.current = nextAtEnd;
-    setScrolls(nextScrolls);
-    publishScroll(nextScrolls, nextAtEnd);
+  const publishScrollState = (scrolls: boolean, atEnd: boolean) => {
+    if (inert || side !== "single") return;
+    onScrollState?.(scrolls, atEnd);
+  };
+
+  const updateAtEnd = () => {
+    const element = ref.current;
+    if (!element) return;
+    const { scrolls, atEnd } = readScrollState(element);
+    setAtEnd(atEnd);
+    publishScrollState(scrolls, atEnd);
+  };
+
+  const readMore = () => {
+    const element = ref.current;
+    if (!element) return;
+    const root = pageScrollRoot(element);
+    root.scrollBy({ top: root.clientHeight * 0.8, behavior: "smooth" });
   };
 
   useLayoutEffect(() => {
@@ -140,61 +137,12 @@ export function MagazinePage({
   useLayoutEffect(() => {
     setFit(1);
     setScrolls(false);
-    atEndLatchRef.current = true;
   }, [size]);
 
   const layout = side === "single" ? "stack" : "fill";
 
-  useLayoutEffect(() => {
-    const article = ref.current;
-    const inner = innerRef.current;
-    if (!article || side !== "single" || inert) {
-      if (scrollApiRef) scrollApiRef.current = null;
-      return;
-    }
-
-    const root = () => getPageScrollRoot(article);
-
-    if (scrollApiRef) {
-      scrollApiRef.current = {
-        scrollDown: () => {
-          root().scrollBy({ top: root().clientHeight * 0.78, behavior: "smooth" });
-        },
-      };
-    }
-
-    const onScroll = () => measureScroll();
-    const scrollRoot = root();
-    scrollRoot.addEventListener("scroll", onScroll, { passive: true });
-
-    const ro = new ResizeObserver(() => measureScroll());
-    ro.observe(scrollRoot);
-    if (inner && inner !== scrollRoot) ro.observe(inner);
-
-    const media = inner?.querySelectorAll("img, video") ?? [];
-    for (const node of media) {
-      node.addEventListener("load", measureScroll);
-      if (node instanceof HTMLVideoElement) {
-        node.addEventListener("loadedmetadata", measureScroll);
-      }
-    }
-
-    measureScroll();
-
-    return () => {
-      scrollRoot.removeEventListener("scroll", onScroll);
-      ro.disconnect();
-      for (const node of media) {
-        node.removeEventListener("load", measureScroll);
-        if (node instanceof HTMLVideoElement) {
-          node.removeEventListener("loadedmetadata", measureScroll);
-        }
-      }
-      if (scrollApiRef) scrollApiRef.current = null;
-    };
-  }, [inert, scrollApiRef, side, size]);
-
-  /* Doble página: reduce la escala hasta MIN_FIT; en ≥1370 no baja a una hoja. */
+  /* Doble página: reduce la escala hasta MIN_FIT y, si igual no entra, pide pasar a una página
+     por vez. Una página por vez: composición apilada que scrollea si hace falta. */
   useLayoutEffect(() => {
     const element = ref.current;
     if (!element || size.h === 0) return;
@@ -203,11 +151,16 @@ export function MagazinePage({
       return;
     }
     if (side === "single") {
+      const { scrolls: overflowing, atEnd } = readScrollState(element);
+      setScrolls(overflowing);
+      setAtEnd(atEnd);
+      publishScrollState(overflowing, atEnd);
       onOverflow?.(pageNumber, false);
       return;
     }
+    publishScrollState(false, true);
     if (size.w / size.h < MIN_SPREAD_RATIO) {
-      if (window.innerWidth < SPREAD_MIN_WIDTH) onNoFit?.();
+      onNoFit?.();
       return;
     }
     if (!contentOverflows(element)) {
@@ -218,7 +171,7 @@ export function MagazinePage({
       setFit((current) => Math.max(MIN_FIT, Number((current - FIT_STEP).toFixed(2))));
     } else {
       onOverflow?.(pageNumber, true);
-      if (window.innerWidth < SPREAD_MIN_WIDTH) onNoFit?.();
+      onNoFit?.();
     }
   }, [fit, inert, onNoFit, onOverflow, pageNumber, side, size]);
 
@@ -240,8 +193,22 @@ export function MagazinePage({
         <span className="page-blob page-blob--a" />
         <span className="page-blob page-blob--b" />
       </span>
-      <div className="magazine-page__inner" ref={innerRef}>
+      <div
+        className="magazine-page__inner"
+        ref={innerRef}
+        onScroll={scrolls ? updateAtEnd : undefined}
+      >
         <PageActiveContext.Provider value={!inert}>{children}</PageActiveContext.Provider>
+        {scrolls ? (
+          <div className={`scroll-cue${atEnd ? " is-hidden" : ""}`}>
+            <button type="button" className="scroll-cue__button" onClick={readMore} tabIndex={atEnd ? -1 : 0}>
+              Seguí leyendo
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v13m0 0-5.5-5.5M12 18l5.5-5.5" />
+              </svg>
+            </button>
+          </div>
+        ) : null}
       </div>
     </article>
   );

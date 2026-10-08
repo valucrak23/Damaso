@@ -4,8 +4,6 @@ import {
   primaryMagazineContent,
 } from "../../content/primaryMagazineContent";
 import { useMagazineNavigation } from "../../hooks/useMagazineNavigation";
-import { useMagazineViewportUi } from "../../hooks/useMagazineViewportUi";
-import { getPageScrollRoot } from "./pageScroll";
 import { MagazinePage } from "./MagazinePage";
 import { MagazineSpread } from "./MagazineSpread";
 import { PageFlip } from "./PageFlip";
@@ -17,25 +15,21 @@ import { PageProposal } from "./pages/PageProposal";
 
 const PAGES = [PagePresentation, PageProposal, PageExperiences, PageFamilies] as const;
 
-function canScrollInner(page: HTMLElement | null, down: boolean) {
-  if (!page) return false;
-  const root = getPageScrollRoot(page);
-  if (root.scrollHeight <= root.clientHeight + 1) return false;
+function canScroll(element: Element | null, down: boolean) {
+  if (!(element instanceof HTMLElement)) return false;
+  if (element.scrollHeight <= element.clientHeight + 1) return false;
   return down
-    ? root.scrollTop + root.clientHeight < root.scrollHeight - 1
-    : root.scrollTop > 0;
+    ? element.scrollTop + element.clientHeight < element.scrollHeight - 1
+    : element.scrollTop > 0;
 }
 
 export function PrimaryMagazine() {
   const stageRef = useRef<HTMLElement>(null);
   const pointerRef = useRef<{ x: number; y: number } | null>(null);
   const swipedRef = useRef(false);
-  const scrollApiRef = useRef<{ scrollDown: () => void } | null>(null);
   const [overflowPages, setOverflowPages] = useState<number[]>([]);
-  const [pageScroll, setPageScroll] = useState({ scrolls: false, atEnd: true });
   const nav = useMagazineNavigation(MAGAZINE_PAGE_COUNT);
   const { blockSpread } = nav;
-  const { stackScrollUi, mobileLandscape } = useMagazineViewportUi();
   const content = primaryMagazineContent;
 
   const onOverflow = useCallback((pageNumber: number, overflowing: boolean) => {
@@ -46,14 +40,6 @@ export function PrimaryMagazine() {
       return current;
     });
   }, []);
-
-  const onPageScrollState = useCallback((scrolls: boolean, atEnd: boolean) => {
-    setPageScroll({ scrolls, atEnd });
-  }, []);
-
-  useEffect(() => {
-    setPageScroll({ scrolls: false, atEnd: true });
-  }, [nav.index, nav.spreadMode]);
 
   useEffect(() => {
     if (import.meta.env.DEV && overflowPages.length > 0) {
@@ -66,14 +52,8 @@ export function PrimaryMagazine() {
   }, [overflowPages]);
 
   const pageNode = useCallback(
-    (
-      pageIndex: number,
-      inert: boolean,
-      side: "left" | "right" | "single",
-      options?: { scrollActive?: boolean },
-    ) => {
+    (pageIndex: number, inert: boolean, side: "left" | "right" | "single") => {
       const Page = PAGES[pageIndex];
-      const scrollActive = options?.scrollActive === true;
       return (
         <MagazinePage
           key={`${side}-${pageIndex}`}
@@ -83,14 +63,12 @@ export function PrimaryMagazine() {
           inert={inert}
           onOverflow={onOverflow}
           onNoFit={side === "single" ? undefined : blockSpread}
-          onScrollState={scrollActive ? onPageScrollState : undefined}
-          scrollApiRef={scrollActive ? scrollApiRef : undefined}
         >
           <Page />
         </MagazinePage>
       );
     },
-    [blockSpread, onOverflow, onPageScrollState],
+    [blockSpread, onOverflow],
   );
 
   const spreadFlipped = nav.index >= 2;
@@ -107,30 +85,14 @@ export function PrimaryMagazine() {
 
   const mobileUnderIndex = Math.min(nav.index + 1, MAGAZINE_PAGE_COUNT - 1);
 
-  const singleModeScrollUi = !nav.spreadMode && stackScrollUi;
-  const hasPageScroll = singleModeScrollUi && pageScroll.scrolls;
-
-  const paginationVisible =
-    nav.spreadMode ||
-    mobileLandscape ||
-    !pageScroll.scrolls ||
-    pageScroll.atEnd;
-
-  const showScrollCue =
-    singleModeScrollUi && pageScroll.scrolls && !pageScroll.atEnd;
-
-  const showScrollDown =
-    !nav.spreadMode && mobileLandscape && pageScroll.scrolls;
-
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
     const handleWheel = (event: WheelEvent) => {
       const page = nav.spreadMode
         ? (event.target as Element).closest?.('.magazine-page[data-layout="stack"]')
-        : stage.querySelector<HTMLElement>(".stack-page.is-current .magazine-page");
-      const vertical = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
-      if (page instanceof HTMLElement && vertical && canScrollInner(page, event.deltaY > 0)) {
+        : stage.querySelector(".stack-page.is-current .magazine-page");
+      if (canScroll(page ?? null, event.deltaY > 0) && Math.abs(event.deltaY) >= Math.abs(event.deltaX)) {
         return;
       }
       nav.onWheel(event);
@@ -180,18 +142,6 @@ export function PrimaryMagazine() {
     return swiped;
   }, []);
 
-  const stageClass = [
-    "magazine-stage",
-    nav.spreadMode ? "is-spread" : "is-single",
-    singleModeScrollUi ? "is-stack-scroll-ui" : "",
-    mobileLandscape ? "is-mobile-landscape" : "",
-    hasPageScroll ? "has-page-scroll" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  const scrollDown = () => scrollApiRef.current?.scrollDown();
-
   return (
     <div className="app-shell">
       <a className="skip-link visually-hidden" href="#revista">
@@ -203,7 +153,7 @@ export function PrimaryMagazine() {
       <main
         id="revista"
         ref={stageRef}
-        className={stageClass}
+        className={`magazine-stage${nav.spreadMode ? " is-spread" : " is-single"}`}
         tabIndex={-1}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
@@ -235,7 +185,7 @@ export function PrimaryMagazine() {
             front={pages.front}
             back={pages.back}
             under={pages.under}
-            singleCurrent={pageNode(nav.index, false, "single", { scrollActive: true })}
+            singleCurrent={pageNode(nav.index, false, "single")}
             singleUnder={pageNode(mobileUnderIndex, true, "single")}
             turningFrom={
               !nav.reducedMotion && nav.animating && nav.direction === "forward"
@@ -253,11 +203,6 @@ export function PrimaryMagazine() {
           canNext={nav.canNext}
           onPrev={nav.prev}
           onNext={nav.next}
-          visible={paginationVisible}
-          showScrollCue={showScrollCue}
-          onScrollCue={scrollDown}
-          showScrollDown={showScrollDown}
-          onScrollDown={scrollDown}
         />
       </main>
     </div>
